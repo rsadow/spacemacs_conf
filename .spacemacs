@@ -13,7 +13,7 @@ values."
    dotspacemacs-distribution 'spacemacs
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+   dotspacemacs-configuration-layer-path '("~/spacemacs_config/layers")
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
@@ -26,8 +26,8 @@ values."
      auto-completion
      ;; better-defaults
      emacs-lisp
-     (c-c++ :variables
-            c-c++-default-mode-for-headers 'c++-mode)
+     ;; (c-c++ :variables
+            ;; c-c++-default-mode-for-headers 'c++-mode)
      ;; semantic
      ;; git
      ;; markdown
@@ -38,12 +38,13 @@ values."
      ;; spell-checking
      ;; syntax-checking
      ;; version-control
+     rs-cpp
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/config'.
-   dotspacemacs-additional-packages '(google-c-style irony company-irony)
+   dotspacemacs-additional-packages '(google-c-style)
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -203,15 +204,12 @@ user code."
    sp-highlight-wrap-tag-overlay nil
    )
   (defun my-load-irony()
+    (interactive)
     (message (concat ("Path:") projectile-project-root))
     )
 )
 
 (defun dotspacemacs/user-config ()
-
-  (defmacro rs/remove-from-list (list-var element)
-    `(setq ,list-var (remove ,element ,list-var)))
-  (global-vi-tilde-fringe-mode -1)
 
   (add-hook 'after-init-hook 'global-company-mode)
   ;; (setq company-idle-delay              0
@@ -222,9 +220,9 @@ user code."
 
   ;; TO-DO: To be corrected
   
-  (push "/home/rsadowsk/.emacs.d/private" load-path)
-  (require 'ttcn3)
-  (require 'cc-mode)
+  ;; (push "/home/rsadowsk/.emacs.d/private" load-path)
+  ;; (require 'ttcn3)
+  ;; (require 'cc-mode)
   ;; (require 'semantic)
   ;; (global-semanticdb-minor-mode 1)
   ;; (global-semantic-idle-scheduler-mode 1)
@@ -266,27 +264,23 @@ user code."
   (setq projectile-enable-caching t)
 
 
+  ;; (add-hook 'c++-mode-hook 'irony-mode)
+  ;; (add-hook 'c-mode-hook 'irony-mode)
+  ;; (add-hook 'objc-mode-hook 'irony-mode)
 
-
-
-
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'objc-mode-hook 'irony-mode)
-
-  (add-hook 'c++-mode-hook 'company-mode)
-  (add-hook 'c-mode-hook 'company-mode)
-  ;; replace the `completion-at-point' and `complete-symbol' bindings in
-  ;; irony-mode's buffers by irony-mode's function
-  (defun my-irony-mode-hook ()
-    (define-key irony-mode-map [remap completion-at-point]
-      'irony-completion-at-point-async)
-    (define-key irony-mode-map [remap complete-symbol]
-      'irony-completion-at-point-async))
-  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  (eval-after-load 'company
-    '(add-to-list 'company-backends 'company-irony))
+  ;; (add-hook 'c++-mode-hook 'company-mode)
+  ;; (add-hook 'c-mode-hook 'company-mode)
+  ;; ;; replace the `completion-at-point' and `complete-symbol' bindings in
+  ;; ;; irony-mode's buffers by irony-mode's function
+  ;; (defun my-irony-mode-hook ()
+  ;;   (define-key irony-mode-map [remap completion-at-point]
+  ;;     'irony-completion-at-point-async)
+  ;;   (define-key irony-mode-map [remap complete-symbol]
+  ;;     'irony-completion-at-point-async))
+  ;; (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+  ;; (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  ;; (eval-after-load 'company
+  ;;   '(add-to-list 'company-backends 'company-irony))
 
   ;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
   ;; (defun irony--check-expansion ()
@@ -338,11 +332,7 @@ user code."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-backends
-   (quote
-    (company-irony company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-cmake company-capf
-                   (company-dabbrev-code company-gtags company-etags company-keywords)
-                   company-oddmuse company-files company-dabbrev)))
+
  '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
