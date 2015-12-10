@@ -16,8 +16,9 @@
       '(
         cc-mode
         company
-        irony
-        company-irony
+        rtags
+        ;; irony
+        ;; company-irony
       ))
 
 ;; List of packages to exclude.
@@ -43,34 +44,42 @@
         "mga" 'projectile-find-other-file
         "mgA" 'projectile-find-other-file-other-window))))
 
-(defun rs-cpp/init-irony()
-  (use-package irony
+;; (defun rs-cpp/init-irony()
+;;   (use-package irony
+;;     :ensure t
+;;     :defer t
+;;     :init
+;;     (add-hook 'c++-mode-hook 'irony-mode)
+;;     (add-hook 'c-mode-hook 'irony-mode)
+;;     (add-hook 'objc-mode-hook 'irony-mode)
+;;     :config
+;;     (defun my-irony-mode-hook ()
+;;       (define-key irony-mode-map [remap completion-at-point]
+;;         'irony-completion-at-point-async)
+;;       (define-key irony-mode-map [remap complete-symbol]
+;;         'irony-completion-at-point-async))
+;;     (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+;;     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+;; (message "RS: Irony loaded"))
+
+
+(defun rs-cpp/init-rtags()
+  (use-package rtags
     :ensure t
     :defer t
-    :init
-    (add-hook 'c++-mode-hook 'irony-mode)
-    (add-hook 'c-mode-hook 'irony-mode)
-    (add-hook 'objc-mode-hook 'irony-mode)
     :config
-    (defun my-irony-mode-hook ()
-      (define-key irony-mode-map [remap completion-at-point]
-        'irony-completion-at-point-async)
-      (define-key irony-mode-map [remap complete-symbol]
-        'irony-completion-at-point-async))
-    (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
-  (message "RS: Irony loaded"))
+    (setq rtags-completions-enabled t)
+    (setq rtags-completions-timer-interval 0)
+    (message "RS: rtags-loaded")
+    ))
 
 (defun rs-cpp/post-init-company ()
-  (spacemacs|add-company-hook c-mode-common))
-
-  (when (configuration-layer/layer-usedp 'auto-completion)
-    (defun rs-cpp/init-company-irony ()
-      (use-package company-irony
-        :if (configuration-layer/package-usedp 'company)
-        :defer t
-        :init (push 'company-irony company-backends-c-mode-common))))
-
+  (spacemacs|add-company-hook c-mode-common)
+  (setq company-idle-delay 0)
+  ;; (require 'company-rtags)
+  ;; (setq company-backends '(company-rtags))
+  ;; (rtags-diagnostics))
+)
 
 (defun check-compile-options ()
   (interactive)

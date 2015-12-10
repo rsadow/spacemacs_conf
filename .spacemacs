@@ -202,11 +202,10 @@ user code."
    sp-highlight-pair-overlay nil
    sp-highlight-wrap-overlay nil
    sp-highlight-wrap-tag-overlay nil
+
+   sp-
+
    )
-  (defun my-load-irony()
-    (interactive)
-    (message (concat ("Path:") projectile-project-root))
-    )
 )
 
 (defun dotspacemacs/user-config ()
@@ -219,37 +218,12 @@ user code."
   ;;       )
 
   ;; TO-DO: To be corrected
-  
   ;; (push "/home/rsadowsk/.emacs.d/private" load-path)
   ;; (require 'ttcn3)
   ;; (require 'cc-mode)
-  ;; (require 'semantic)
-  ;; (global-semanticdb-minor-mode 1)
-  ;; (global-semantic-idle-scheduler-mode 1)
-  ;; ;; (global-semantic-idle-local-symbol-highlight-mode nil)
-  ;; ;; (global-semantic-highlight-edits-mode nil)
-  ;; (semantic-mode 1)
-  ;; (global-ede-mode t)
-  ;; ;; (semantic-idle-summary-mode nil)
-  ;; (ede-cpp-root-project "Test"
-  ;;                       :name "Test Project"
-  ;;                       :file "/var/fpwork/rsadowsk/workspace/repos/piRel3/CMakeLists.txt"
-  ;;                       :include-path '("/SC_MONOLITH/DM_FSM/src/include"
-  ;;                                       )
-  ;;                       )
-  ;; (ede-cpp-root-project "trunk"
-  ;;                       :name "trunk"
-  ;;                       :file "/var/fpwork/rsadowsk/workspace/repos/moam_trunk/CMakeLists.txt"
-  ;;                       :include-path '("/SC_MONOLITH/DM_FSM/src/include"
-  ;;                                       )
-  ;;                       ) 
 
-  ;; (spacemacs/declare-prefix "g" "rs")
-  ;; (evil-leader/set-key "gg" 'semantic-ia-fast-jump)
+
   ;; GENERAL
-
-  ;; (setq company-backends '(company-lisp 
-                           ;; ))
 
   (setq org-return-follows-link t)
   (setq powerline-default-separator nil)
@@ -263,57 +237,17 @@ user code."
   (setq projectile-indexing-method 'alien)
   (setq projectile-enable-caching t)
 
+  (eval-after-load 'company
+    '(add-to-list 'company-backends 'company-rtags))
+  (rtags-diagnostics)
 
-  ;; (add-hook 'c++-mode-hook 'irony-mode)
-  ;; (add-hook 'c-mode-hook 'irony-mode)
-  ;; (add-hook 'objc-mode-hook 'irony-mode)
-
-  ;; (add-hook 'c++-mode-hook 'company-mode)
-  ;; (add-hook 'c-mode-hook 'company-mode)
-  ;; ;; replace the `completion-at-point' and `complete-symbol' bindings in
-  ;; ;; irony-mode's buffers by irony-mode's function
-  ;; (defun my-irony-mode-hook ()
-  ;;   (define-key irony-mode-map [remap completion-at-point]
-  ;;     'irony-completion-at-point-async)
-  ;;   (define-key irony-mode-map [remap complete-symbol]
-  ;;     'irony-completion-at-point-async))
-  ;; (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-  ;; (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  ;; (eval-after-load 'company
-  ;;   '(add-to-list 'company-backends 'company-irony))
-
-  ;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-  ;; (defun irony--check-expansion ()
-  ;;   (save-excursion
-  ;;     (if (looking-at "\\_>") t
-  ;;       (backward-char 1)
-  ;;       (if (looking-at "\\.") t
-  ;;         (backward-char 1)
-  ;;         (if (looking-at "->") t nil)))))
-  ;; (defun irony--indent-or-complete ()
-  ;;   "Indent or Complete"
-  ;;   (interactive)
-  ;;   (cond ((and (not (use-region-p))
-  ;;               (irony--check-expansion))
-  ;;          (message "complete")
-  ;;          (company-complete-common))
-  ;;         (t
-  ;;          (message "indent")
-  ;;          (call-interactively 'c-indent-line-or-region))))
-  ;; (defun irony-mode-keys ()
-  ;;   "Modify keymaps used by `irony-mode'."
-  ;;   (local-set-key (kbd "TAB") 'irony--indent-or-complete)
-  ;;   (local-set-key [tab] 'irony--indent-or-complete))
-  ;; (add-hook 'c-mode-common-hook 'irony-mode-keys)
-
-
-  (c-add-style "nokia-c++" 
+  (c-add-style "nokia-c++"
                '("stroustrup"
                  (indent-tabs-mode . nil)
                  (c-basic-offset . 4)
                  (c-offsets-alist . ((inline-open . 0)
                                      (brace-list-open . 0)
-                                     (statement-case-open . +)))))
+                                    (statement-case-open . +)))))
   (defun rs-c++-mode-hook ()
     (c-set-style "nokia-c++")
     (auto-fill-mode)
@@ -332,8 +266,6 @@ user code."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-
- '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
