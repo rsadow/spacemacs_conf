@@ -204,13 +204,13 @@ user code."
    sp-highlight-pair-overlay nil
    sp-highlight-wrap-overlay nil
    sp-highlight-wrap-tag-overlay nil
-
    )
 )
 
 (defun dotspacemacs/user-config ()
 
   (add-hook 'after-init-hook 'global-company-mode)
+  (global-vi-tilde-fringe-mode -1)
   ;; (setq company-idle-delay              0
   ;;       company-show-numbers            t
   ;;       company-tooltip-limit           20
