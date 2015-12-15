@@ -26,8 +26,9 @@ values."
      auto-completion
      ;; better-defaults
      emacs-lisp
-     ;; (c-c++ :variables
-            ;; c-c++-default-mode-for-headers 'c++-mode)
+     ;; (c-c++ :variables  
+            ;; c-c++-default-mode-for-headers 'c++-mode
+            ;; c-c++-enable-clang-support t)
      ;; semantic
      ;; git
      ;; markdown
@@ -36,7 +37,8 @@ values."
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
      ;; spell-checking
-     ;; syntax-checking
+     (syntax-checking :variables
+                      syntax-checking-enable-tooltips nil)
      ;; version-control
      rs-cpp
      )
@@ -203,8 +205,6 @@ user code."
    sp-highlight-wrap-overlay nil
    sp-highlight-wrap-tag-overlay nil
 
-   sp-
-
    )
 )
 
@@ -228,7 +228,7 @@ user code."
   (setq org-return-follows-link t)
   (setq powerline-default-separator nil)
   (setq-default line-spacing 0.15)
-
+  (setq x-select-enable-clipboard t)
   (with-eval-after-load 'smartparens
     (show-smartparens-global-mode -1))
 
@@ -236,10 +236,6 @@ user code."
 
   (setq projectile-indexing-method 'alien)
   (setq projectile-enable-caching t)
-
-  (eval-after-load 'company
-    '(add-to-list 'company-backends 'company-rtags))
-  (rtags-diagnostics)
 
   (c-add-style "nokia-c++"
                '("stroustrup"
@@ -253,7 +249,7 @@ user code."
     (auto-fill-mode)
     (c-toggle-auto-hungry-state 1))
 
-
+  (setq ffap-machine-p-known 'reject)
   ;; (add-hook 'c-mode-common-hook 'google-set-c-style)
   ;; (add-hook 'c++-mode-hook 'rs-c++-mode-hook)
 
@@ -262,6 +258,11 @@ user code."
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values (quote ((eval c-set-offset (quote innamespace) 0)))))
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
