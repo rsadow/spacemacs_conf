@@ -21,15 +21,16 @@
         flycheck
         flycheck-irony
         clang-format
+        rtags
       ))
 
 ;; List of packages to exclude.
 (setq rs-cpp-excluded-packages '())
 
-
 (defvar rs/script-directory (if load-file-name
                          (file-name-directory load-file-name)
-                       default-directory))
+                         default-directory))
+
 (defun rs/get-projectile-dir()
   (interactive)
   (message "Project dir: %s %s"
@@ -37,8 +38,36 @@
            rs/script-directory))
 
 (defun rs/copy-clang-format()
+  (let ((clang-src-file-name (concat rs/script-directory ".clang-format"))
+        (clang-dst-file-name (concat (projectile-project-root) ".clang-format")))
+    (when (file-newer-than-file-p clang-src-file-name clang-dst-file-name)
+      (progn
+        (message "Copy file %s to %s" clang-src-file-name (projectile-project-root))
+        (copy-file clang-src-file-name (projectile-project-root) t)
+      ))))
+
+(defun rs/parse-compilation-db()
+  (let ((compile-json-src (concat (projectile-project-root) "/bin/LinuxX86-64_WMP_FCT/compile_commands.json"))
+        (compile-json-dst (concat (projectile-project-root) "compile_commands.json")))
+    (when (file-exists-p compile-json-src)
+      (unless (file-exists-p compile-json-dst)
+        (progn
+          (message "Reparsing...")
+          (copy-file compile-json-src (projectile-project-root) t)
+          (shell-command-to-string (format "sed -E -i -e 's/[^ ]+x86_64-pc-linux-gnu-g[+|c][^ ]+|--sysroot[^ ]+|-D__CCS_INLINE__[^ ]+//g' %s" compile-json-dst))
+          )))))
+
+(defun rs/init-cpp-project()
   (interactive)
-    (copy-file (concat rs/script-directory ".clang-format") (projectile-project-root)))
+  (rs/copy-clang-format)
+  (rs/parse-compilation-db))
+
+(defun rs/reinit-cpp-project()
+  (interactive)
+  (let ((compile-json-dst (concat (projectile-project-root) "compile_commands.json")))
+    (when (file-exists-p compile-json-dst)
+      (delete-file compile-json-dst)
+      (rs/init-cpp-project))))
 
 (defun rs-cpp/init-cc-mode ()
   (use-package cc-mode
@@ -74,8 +103,7 @@
       (define-key irony-mode-map [remap complete-symbol]
         'irony-completion-at-point-async))
     (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
-(message "RS: Irony loaded"))
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
 
 
 (defun rs-cpp/post-init-company ()
@@ -99,6 +127,13 @@
 (defun rs-cpp/init-flycheck-irony()
   (use-package flycheck-irony
     :defer t))
+
+
+(defun rs-cpp/init-rtags()
+  (use-package rtags
+    :if (eq major-mode 'c++-mode)
+    :defer t))
+
 
 (defun check-compile-options ()
   (interactive)

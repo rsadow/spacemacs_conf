@@ -223,8 +223,6 @@ user code."
   ;; TO-DO: To be corrected
   ;; (push "/home/rsadowsk/.emacs.d/private" load-path)
   ;; (require 'ttcn3)
-  ;; (require 'cc-mode)
-
 
   ;; GENERAL
 
