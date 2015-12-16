@@ -211,6 +211,9 @@ user code."
 
   (add-hook 'after-init-hook 'global-company-mode)
   (global-vi-tilde-fringe-mode -1)
+
+  (with-eval-after-load 'flycheck
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
   ;; (setq company-idle-delay              0
   ;;       company-show-numbers            t
   ;;       company-tooltip-limit           20

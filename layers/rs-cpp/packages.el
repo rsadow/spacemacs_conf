@@ -26,9 +26,19 @@
 ;; List of packages to exclude.
 (setq rs-cpp-excluded-packages '())
 
-(defun rs-cpp/get-projectile-dir()
+
+(defvar rs/script-directory (if load-file-name
+                         (file-name-directory load-file-name)
+                       default-directory))
+(defun rs/get-projectile-dir()
   (interactive)
-  (message "Root dir"))
+  (message "Project dir: %s %s"
+           (projectile-project-root)
+           rs/script-directory))
+
+(defun rs/copy-clang-format()
+  (interactive)
+    (copy-file (concat rs/script-directory ".clang-format") (projectile-project-root)))
 
 (defun rs-cpp/init-cc-mode ()
   (use-package cc-mode
