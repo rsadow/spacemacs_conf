@@ -37,9 +37,10 @@ values."
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
      ;; spell-checking
-     (syntax-checking :variables
-                      syntax-checking-enable-tooltips nil)
+     ;; (syntax-checking :variables
+                      ;; syntax-checking-enable-tooltips nil)
      ;; version-control
+     ;; python
      rs-cpp
      )
    ;; List of additional packages that will be installed without being
@@ -200,7 +201,7 @@ It is called immediately after `dotspacemacs/init'.  You are free to put any
 user code."
 
   (setq-default
-
+   
    sp-highlight-pair-overlay nil
    sp-highlight-wrap-overlay nil
    sp-highlight-wrap-tag-overlay nil
@@ -224,12 +225,13 @@ user code."
   ;; (push "/home/rsadowsk/.emacs.d/private" load-path)
   ;; (require 'ttcn3)
 
-  ;; GENERAL
-
+  ;; GENERAL 
   (setq org-return-follows-link t)
   (setq powerline-default-separator nil)
   (setq-default line-spacing 0.15)
   (setq x-select-enable-clipboard t)
+  (custom-set-variables              ; Sets show-trailing-whitespace as expected
+   '(show-trailing-whitespace nil))
   (with-eval-after-load 'smartparens
     (show-smartparens-global-mode -1))
 

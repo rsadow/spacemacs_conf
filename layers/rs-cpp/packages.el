@@ -15,13 +15,14 @@
 (setq rs-cpp-packages
       '(
         cc-mode
+        cmake-mode
         company
         irony
         company-irony
         flycheck
         flycheck-irony
         clang-format
-        rtags
+        ;; rtags
       ))
 
 ;; List of packages to exclude.
@@ -54,11 +55,15 @@
         (progn
           (message "Reparsing...")
           (copy-file compile-json-src (projectile-project-root) t)
-          (shell-command-to-string (format "sed -E -i -e 's/[^ ]+x86_64-pc-linux-gnu-g[+|c][^ ]+|--sysroot[^ ]+|-D__CCS_INLINE__[^ ]+//g' %s" compile-json-dst))
+          (shell-command-to-string (format "sed -E -i -e 's/--sysroot[^ ]+|-D__CCS_INLINE__[^ ]+//g' %s" compile-json-dst))
+          (shell-command-to-string (format "sed -E -i -e 's|.bin.*proxy|/usr/bin/c++|g' %s" compile-json-dst))
+          (message "Done")
+          (irony-cdb-autosetup-compile-options)
           )))))
 
 (defun rs/init-cpp-project()
   (interactive)
+  (message "Init project...")
   (rs/copy-clang-format)
   (rs/parse-compilation-db))
 
@@ -83,10 +88,20 @@
         "mgA" 'projectile-find-other-file-other-window)
       (evil-leader/set-key-for-mode 'c++-mode
         "mga" 'projectile-find-other-file
-        "mgA" 'projectile-find-other-file-other-window))))
+        "mgA" 'projectile-find-other-file-other-window
+        "gf"  'rtags-find-symbol-at-point
+        "g," 'rtags-location-stack-back
+        "g." 'rtags-location-stack-forward
+        "gl" 'rtags-find-references-at-point
+        "g;" 'rtags-find-virtuals-at-point))))
 
 (defun rs-cpp/init-clang-format ()
   (use-package clang-format))
+
+(defun rs-cpp/init-cmake-mode ()
+  (use-package cmake-mode
+    :mode (("CMakeLists\\.txt\\'" . cmake-mode) ("\\.cmake\\'" . cmake-mode))
+    :init (push 'company-cmake company-backends-cmake-mode)))
 
 (defun rs-cpp/init-irony()
   (use-package irony
@@ -97,6 +112,7 @@
     (add-hook 'c-mode-hook 'irony-mode)
     (add-hook 'objc-mode-hook 'irony-mode)
     :config
+    (message "Irony loaded")
     (defun my-irony-mode-hook ()
       (define-key irony-mode-map [remap completion-at-point]
         'irony-completion-at-point-async)
@@ -108,6 +124,7 @@
 
 (defun rs-cpp/post-init-company ()
   (spacemacs|add-company-hook c-mode-common)
+  (spacemacs|add-company-hook cmake-mode)
   (setq company-idle-delay 0)
   )
 
@@ -132,7 +149,10 @@
 (defun rs-cpp/init-rtags()
   (use-package rtags
     :if (eq major-mode 'c++-mode)
-    :defer t))
+    :defer t
+    :config
+    (progn
+      (evil-leader/set-key "gf" 'rtags-find-symbol-at-point))))
 
 
 (defun check-compile-options ()
