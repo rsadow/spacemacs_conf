@@ -17,12 +17,12 @@
         cc-mode
         cmake-mode
         company
-        irony
-        company-irony
-        flycheck
-        flycheck-irony
+        ;; irony
+        ;; company-irony
+        ;; flycheck
+        ;; flycheck-irony
         clang-format
-        ;; rtags
+        rtags
       ))
 
 ;; List of packages to exclude.
@@ -64,8 +64,9 @@
 (defun rs/init-cpp-project()
   (interactive)
   (message "Init project...")
-  (rs/copy-clang-format)
-  (rs/parse-compilation-db))
+  (message (file-name-extension buffer-file-name)))
+  ;; (rs/copy-clang-format)
+  ;; (rs/parse-compilation-db))
 
 (defun rs/reinit-cpp-project()
   (interactive)
@@ -83,7 +84,7 @@
     (progn
       (require 'compile)
       (c-toggle-auto-newline 1)
-      (evil-leader/set-key-for-mode 'c-mode
+      (evil-leader/set-key-for-mode 'c-mode:
         "mga" 'projectile-find-other-file
         "mgA" 'projectile-find-other-file-other-window)
       (evil-leader/set-key-for-mode 'c++-mode
@@ -105,13 +106,14 @@
 
 (defun rs-cpp/init-irony()
   (use-package irony
-    :ensure t
     :defer t
     :init
     (add-hook 'c++-mode-hook 'irony-mode)
     (add-hook 'c-mode-hook 'irony-mode)
     (add-hook 'objc-mode-hook 'irony-mode)
     :config
+    (progn
+
     (message "Irony loaded")
     (defun my-irony-mode-hook ()
       (define-key irony-mode-map [remap completion-at-point]
@@ -119,7 +121,7 @@
       (define-key irony-mode-map [remap complete-symbol]
         'irony-completion-at-point-async))
     (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))))
 
 
 (defun rs-cpp/post-init-company ()

@@ -26,7 +26,7 @@ values."
      auto-completion
      ;; better-defaults
      emacs-lisp
-     ;; (c-c++ :variables  
+     ;; (c-c++ :variables
             ;; c-c++-default-mode-for-headers 'c++-mode
             ;; c-c++-enable-clang-support t)
      ;; semantic
@@ -37,17 +37,18 @@ values."
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
      ;; spell-checking
-     ;; (syntax-checking :variables
-                      ;; syntax-checking-enable-tooltips nil)
+     (syntax-checking :variables
+                      syntax-checking-enable-tooltips nil)
      ;; version-control
      ;; python
      rs-cpp
+     themes-megapack
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/config'.
-   dotspacemacs-additional-packages '(google-c-style)
+   dotspacemacs-additional-packages '(google-c-style rainbow-mode)
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -201,7 +202,6 @@ It is called immediately after `dotspacemacs/init'.  You are free to put any
 user code."
 
   (setq-default
-   
    sp-highlight-pair-overlay nil
    sp-highlight-wrap-overlay nil
    sp-highlight-wrap-tag-overlay nil
@@ -222,18 +222,20 @@ user code."
   ;;       )
 
   ;; TO-DO: To be corrected
-  ;; (push "/home/rsadowsk/.emacs.d/private" load-path)
-  ;; (require 'ttcn3)
+  (push "/home/rsadowsk/.emacs.d/private" load-path)
+  (require 'ttcn3)
 
-  ;; GENERAL 
+  (add-to-list 'auto-mode-alist '("\\.ttcn3\\'" . ttcn-3-mode ))
+
+  ;; GENERAL
   (setq org-return-follows-link t)
   (setq powerline-default-separator nil)
-  (setq-default line-spacing 0.15)
+  (setq-default line-spacing 0.16)
   (setq x-select-enable-clipboard t)
   (custom-set-variables              ; Sets show-trailing-whitespace as expected
    '(show-trailing-whitespace nil))
-  (with-eval-after-load 'smartparens
-    (show-smartparens-global-mode -1))
+  ;; (with-eval-after-load 'smartparens
+    ;; (show-smartparens-global-mode -1))
 
   ;; PROJECTILE
 
@@ -241,20 +243,32 @@ user code."
   (setq projectile-enable-caching t)
 
   (c-add-style "nokia-c++"
-               '("stroustrup"
+                '("stroustrup"
+                  (indent-tabs-mode . nil)
+                  (c-basic-offset . 4)
+                  (c-offsets-alist . ((inline-open . 0)
+                                      (brace-list-open . 0)
+                                      (statement-case-open . +)))))
+
+  (c-add-style "rs-c++"
+               '("ellemtel"
                  (indent-tabs-mode . nil)
                  (c-basic-offset . 4)
-                 (c-offsets-alist . ((inline-open . 0)
+                 (c-offsets-alist . ((innamespace . 0)
+                                     (inline-open . 0)
                                      (brace-list-open . 0)
-                                    (statement-case-open . +)))))
-  (defun rs-c++-mode-hook ()
-    (c-set-style "nokia-c++")
-    (auto-fill-mode)
-    (c-toggle-auto-hungry-state 1))
+                                     (statement-case-open . +)))))
+
+
+
+  (defun rs-c++-mode-hook()
+    (c-set-style "rs-c++")
+    (c-toggle-auto-state nil)
+    (c-toggle-auto-hungry-state nil))
 
   (setq ffap-machine-p-known 'reject)
   ;; (add-hook 'c-mode-common-hook 'google-set-c-style)
-  ;; (add-hook 'c++-mode-hook 'rs-c++-mode-hook)
+  (add-hook 'c-mode-common-hook 'rs-c++-mode-hook)
 
 )
 
